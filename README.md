@@ -1,138 +1,91 @@
-# CMPG325 — Individual Network Project Portfolio
+# CMPG325 Individual Network Project Portfolio
 
-![Status](https://img.shields.io/badge/Milestone_1-Complete-brightgreen)
-![Status](https://img.shields.io/badge/Milestone_2-Complete-brightgreen)
-![Status](https://img.shields.io/badge/Milestone_3-Not_Started-lightgrey)
-![Challenge](https://img.shields.io/badge/Challenge-WPA2--PSK_Hardening-blueviolet)
-![Constraint](https://img.shields.io/badge/Constraint-VoIP%2FData_Separation-blueviolet)
-![CR](https://img.shields.io/badge/CR15-Dual_ISP_Resilience-blueviolet)
-
-**Student:** Shivuri, Nyeleti · **Student number:** 42718910
-**Project ID:** CMPG325-2026-133 · **Client ID:** CLI-133
-**Assigned organisation:** Khumo Advertising Billboards (Vryburg) · **Industry:** Media
-
----
-
-## Table of contents
-
-- [Project overview](#project-overview)
-- [Repository structure](#repository-structure)
-- [Project status](#project-status)
-- [Design summary](#design-summary)
-  - [Topology](#topology)
-  - [VLAN design](#vlan-design)
-  - [IP addressing](#ip-addressing)
-- [Client requirements & assumptions](#client-requirements--assumptions)
-- [Academic integrity](#academic-integrity)
+**Student:** Shivuri, Nyeleti
+**Student number:** 42718910
+**Project ID:** CMPG325-2026-133
+**Client ID:** CLI-133
+**Assigned organisation:** Khumo Advertising Billboards (Vryburg)
+**Industry:** Media
 
 ---
 
 ## Project overview
 
-This repository is the portfolio of evidence for my CMPG325 individual network project. The brief assigns Khumo Advertising Billboards (Vryburg) as the client, with a fixed addressing block, a mandatory design constraint (VoIP/data separation), an assigned wireless security challenge (WPA2-PSK hardening), and a resilience change request (dual ISP). Where the brief does not specify organisational detail, I made and documented reasonable network-engineering assumptions, consistent with my lecturer's guidance for this project.
+This repository is the portfolio of evidence for my CMPG325 individual network project. The brief assigns Khumo Advertising Billboards (Vryburg) as the client, with a fixed addressing block, a mandatory design constraint separating VoIP and data traffic, an assigned wireless security challenge (WPA2-PSK hardening), and a resilience change request requiring a second internet connection. Where the brief did not specify organisational detail, I made and documented reasonable network engineering assumptions, consistent with my lecturer's guidance for this project.
 
 ## Repository structure
 
 | Folder | Contents |
 |---|---|
-| [`01-client-requirements/`](./01-client-requirements) | Client requirements and documented engineering assumptions |
-| [`02-topology/`](./02-topology) | Physical and logical topology diagrams (image + editable draw.io source) |
-| [`03-ip-addressing/`](./03-ip-addressing) | VLAN table, IP addressing plan, WAN links, trunk configuration |
-| [`04-packet-tracer/`](./04-packet-tracer) | Packet Tracer `.pkt` file and full build-progress screenshot log |
-| [`05-configuration/`](./05-configuration) | Full running-config export for every device, plus AP wireless security config |
-| [`06-testing/`](./06-testing) | Testing evidence summary covering all connectivity and security tests |
-| [`07-troubleshooting/`](./07-troubleshooting) | Detailed troubleshooting log — 8 real issues diagnosed and resolved |
-| [`08-reflection/`](./08-reflection) | Final project reflection |
+| `01-client-requirements/` | Client requirements and documented engineering assumptions |
+| `02-topology/` | Physical and logical topology diagrams, including editable draw.io source files |
+| `03-ip-addressing/` | VLAN table, IP addressing plan, WAN links, and trunk configuration |
+| `04-packet-tracer/` | Packet Tracer project file and a full build progress screenshot log |
+| `05-configuration/` | Full running configuration export for every device, plus the wireless access point's security configuration |
+| `06-testing/` | Testing evidence summary covering all connectivity and security tests |
+| `07-troubleshooting/` | Detailed troubleshooting log documenting issues encountered and resolved |
+| `08-reflection/` | Final project reflection |
 
 ## Project status
 
-<details>
-<summary><strong>Milestone 1 — Client Design Review ✅</strong></summary>
+**Milestone 1, Client Design Review: complete.** Client requirements, documented assumptions, physical topology, logical topology, VLAN design, IP addressing plan, and the initial GitHub repository were all submitted.
 
-- [x] Client requirements
-- [x] Documented engineering assumptions
-- [x] Physical topology (diagram + explanation)
-- [x] Logical topology (diagram + explanation)
-- [x] VLAN design table
-- [x] IP addressing plan
-- [x] Initial GitHub repository
+**Milestone 2, Client Implementation Review: complete.** The following has been built, configured, and verified:
 
-</details>
+- All devices placed, labelled, and cabled according to the physical topology
+- Core Layer 3 switch configured with VLANs, switch virtual interfaces, trunking, and DHCP pools
+- All three access switches configured with correct trunk and access ports
+- Edge routers configured with WAN uplinks to both internet service providers
+- Dual ISP resilience tested in both directions, with live traffic confirmed during failover and after the primary link was restored
+- Inter-VLAN routing verified with live pings between all three departments
+- All PCs and IP phones confirmed on DHCP with correct department based addressing
+- Voice VLAN separation confirmed at the port level and in the DHCP binding table
+- WPA2-PSK with AES encryption configured on the Creative wireless access point, with both a successful connection and a rejected incorrect password tested
+- Full running configuration exported for all six network devices
+- Administrative passwords, login banners, and port security added across all devices as additional hardening
+- Testing evidence summary and troubleshooting log completed
 
-<details open>
-<summary><strong>Milestone 2 — Client Implementation Review ✅</strong></summary>
+Not yet attempted: the WPA2-Enterprise optional extension mentioned in the brief.
 
-- [x] Devices placed, labelled, and cabled per physical topology
-- [x] Core L3 switch — VLANs, SVIs, trunking, DHCP pools (verified)
-- [x] All three access switches configured (trunk + access ports, verified)
-- [x] Edge routers configured — WAN uplinks to both ISPs (verified)
-- [x] CR15 dual-ISP resilience — tested failover **and** restore, with live traffic proof
-- [x] Inter-VLAN routing verified with live pings across all three departments
-- [x] All PCs on DHCP with correct department-based addressing
-- [x] Voice VLAN isolation confirmed (port-level `switchport voice vlan` verification + DHCP binding table)
-- [x] WPA2-PSK (AES) configured on AP-Creative — successful connection **and** wrong-password rejection tested
-- [x] Working `.pkt` file saved to repository
-- [x] Full running-config exported for all 6 network devices
-- [x] Testing evidence summary compiled
-- [x] Troubleshooting log documented (8 issues)
-- [ ] WPA2-Enterprise optional extension (stretch goal — not attempted)
-
-</details>
-
-<details>
-<summary><strong>Milestone 3 — Final Evaluation ⬜</strong></summary>
-
-- [ ] Packet Tracer project (`.pkt`)
-- [ ] GitHub portfolio of evidence
-- [ ] Technical report
-- [ ] 15–20 minute individual video demonstration
-- [ ] Any additional files as required
-
-</details>
+**Milestone 3, Final Evaluation: not yet started.**
 
 ## Design summary
 
 ### Topology
 
-Three-tier hierarchical design (edge/ISP → core L3 switch → access layer), chosen to satisfy CR15 (dual-ISP resilience) and to keep departmental VLANs cleanly separated at the access layer.
+The network follows a three tier hierarchical design: an edge layer with two independent internet service provider connections, a core Layer 3 switch handling all inter-VLAN routing, and an access layer of three switches serving each department separately. This structure satisfies the dual ISP resilience requirement and keeps departmental traffic cleanly separated down to the access layer.
 
-<details>
-<summary>View physical topology diagram</summary>
+**Physical topology diagram:**
 
 ![Physical topology](./02-topology/physical-topology.png)
 
-</details>
-
-<details>
-<summary>View logical topology diagram</summary>
+**Logical topology diagram:**
 
 ![Logical topology](./02-topology/logical-topology.png)
 
-</details>
-
-Full diagrams and editable `.drawio` source files: [`02-topology/`](./02-topology)
+The editable draw.io source files for both diagrams are in `02-topology/`.
 
 ### VLAN design
 
 | VLAN ID | Name | Department |
 |---|---|---|
-| 10 | Admin-Data | Management / Admin |
-| 20 | Creative-Data | Creative / Design |
-| 30 | Production-Data | Production / Logistics |
-| 40 | Voice (VoIP) | Management / Admin |
-| 50 | Wireless | Creative / Design & meeting rooms |
-| 99 | Native / Mgmt | Network infrastructure |
+| 10 | Admin-Data | Management and Admin |
+| 20 | Creative-Data | Creative and Design |
+| 30 | Production-Data | Production and Logistics |
+| 40 | Voice (VoIP) | Management and Admin |
+| 50 | Wireless | Creative and Design, and meeting rooms |
+| 99 | Native/Mgmt | Network infrastructure |
 
-Full VLAN justification: [`03-ip-addressing/ip-addressing-plan.md`](./03-ip-addressing/ip-addressing-plan.md)
+The full justification for this VLAN design is in `03-ip-addressing/ip-addressing-plan.md`.
 
 ### IP addressing
 
-Assigned block `192.168.56.0/24`, subnetted into `/27`s across six VLANs. Full table with gateways and usable ranges: [`03-ip-addressing/ip-addressing-plan.md`](./03-ip-addressing/ip-addressing-plan.md)
+The assigned block, 192.168.56.0/24, is subnetted into /27 blocks across six VLANs. The full addressing table with gateways and usable ranges is in `03-ip-addressing/ip-addressing-plan.md`.
 
-## Client requirements & assumptions
+## Client requirements and assumptions
 
-Full requirements list and documented engineering assumptions (departments, user counts, wireless/VoIP placement, redundancy design): [`01-client-requirements/client-requirements.md`](./01-client-requirements/client-requirements.md)
+The full requirements list and the engineering assumptions made where the brief left detail unspecified, covering departments, user counts, wireless and VoIP placement, and the redundancy design, are documented in `01-client-requirements/client-requirements.md`.
 
 ## Academic integrity
 
-This project is my own individual work, developed according to the CMPG325-2026-133 project brief. Any AI assistance used in preparing documentation or diagrams complied with the applicable NWU AI Policy; I remain responsible for the correctness, understanding, and academic integrity of everything submitted.
+This project is my own individual work, developed according to the CMPG325-2026-133 project brief. Any AI assistance used in preparing documentation or diagrams complied with the applicable NWU AI Policy. I remain responsible for the correctness, understanding, and academic integrity of everything submitted.
