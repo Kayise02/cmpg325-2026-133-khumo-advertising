@@ -17,14 +17,14 @@ This repository is the portfolio of evidence for my CMPG325 individual network p
 
 | Folder | Contents |
 |---|---|
-| `01-client-requirements/` | Client requirements and documented engineering assumptions |
-| `02-topology/` | Physical and logical topology diagrams, including editable draw.io source files |
-| `03-ip-addressing/` | VLAN table, IP addressing plan, WAN links, and trunk configuration |
-| `04-packet-tracer/` | Packet Tracer project file and a full build progress screenshot log |
-| `05-configuration/` | Full running configuration export for every device, plus the wireless access point's security configuration |
-| `06-testing/` | Testing evidence summary covering all connectivity and security tests |
-| `07-troubleshooting/` | Detailed troubleshooting log documenting issues encountered and resolved |
-| `08-reflection/` | Final project reflection |
+| [`01-client-requirements/`](./01-client-requirements/) | Client requirements and documented engineering assumptions |
+| [`02-topology/`](./02-topology/) | Physical and logical topology diagrams, including editable draw.io source files |
+| [`03-ip-addressing/`](./03-ip-addressing/) | VLAN table, IP addressing plan, WAN links, and trunk configuration |
+| [`04-packet-tracer/`](./04-packet-tracer/) | Packet Tracer project file and a full build progress screenshot log |
+| [`05-configuration/`](./05-configuration/) | Full running configuration export for every device, plus the wireless access point's security configuration |
+| [`06-testing/`](./06-testing/) | Testing evidence summary covering all connectivity and security tests |
+| [`07-troubleshooting/`](./07-troubleshooting/) | Detailed troubleshooting log documenting issues encountered and resolved |
+| [`08-reflection/`](./08-reflection/) | Final project reflection |
 
 ## Project status
 
@@ -63,7 +63,7 @@ The network follows a three tier hierarchical design: an edge layer with two ind
 
 ![Logical topology](./02-topology/logical-topology.png)
 
-The editable draw.io source files for both diagrams are in `02-topology/`.
+The editable draw.io source files for both diagrams are in [`02-topology/`](./02-topology/).
 
 ### VLAN design
 
@@ -76,15 +76,15 @@ The editable draw.io source files for both diagrams are in `02-topology/`.
 | 50 | Wireless | Creative and Design, and meeting rooms |
 | 99 | Native/Mgmt | Network infrastructure |
 
-The full justification for this VLAN design is in `03-ip-addressing/ip-addressing-plan.md`.
+The full justification for this VLAN design is in [`03-ip-addressing/ip-addressing-plan.md`](./03-ip-addressing/ip-addressing-plan.md).
 
 ### IP addressing
 
-The assigned block, 192.168.56.0/24, is subnetted into /27 blocks across six VLANs. The full addressing table with gateways and usable ranges is in `03-ip-addressing/ip-addressing-plan.md`.
+The assigned block, 192.168.56.0/24, is subnetted into /27 blocks across six VLANs. The full addressing table with gateways and usable ranges is in [`03-ip-addressing/ip-addressing-plan.md`](./03-ip-addressing/ip-addressing-plan.md).
 
 ## Client requirements and assumptions
 
-The full requirements list and the engineering assumptions made where the brief left detail unspecified, covering departments, user counts, wireless and VoIP placement, and the redundancy design, are documented in `01-client-requirements/client-requirements.md`.
+The full requirements list and the engineering assumptions made where the brief left detail unspecified, covering departments, user counts, wireless and VoIP placement, and the redundancy design, are documented in [`01-client-requirements/client-requirements.md`](./01-client-requirements/client-requirements.md).
 
 ## Academic integrity
 
