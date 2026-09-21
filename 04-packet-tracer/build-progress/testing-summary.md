@@ -21,8 +21,37 @@ Summary of all connectivity and security testing performed during the Packet Tra
 
 **IP SLA object tracking is not supported** on the simulated 3560's IOS image (`12.2(37)SE1`), meaning CR15's floating static route can only detect failure of the router/link itself (e.g. EdgeR1 or its LAN-side link going down), not a genuine upstream-only outage (e.g. ISP1's connection failing while EdgeR1 itself stays reachable on the LAN side). This is documented in detail, along with the reasoning and re-scoped test used instead, in [`../07-troubleshooting/troubleshooting-log.md`](../07-troubleshooting/troubleshooting-log.md) (Issue 6).
 
+## Full department-to-department ping matrix
+
+All 6 pairs of department VLANs confirmed with live ICMP traffic. Every ping returned 4/4 replies with TTL=127, confirming traffic routed through the Core L3 switch.
+
+| Source | Target | Result | Evidence |
+|---|---|---|---|
+| Admin (192.168.56.8) | Creative (192.168.56.40) | ✅ 4/4 | `phase4-ping-matrix-admin.png` |
+| Admin (192.168.56.8) | Production (192.168.56.70) | ✅ 4/4 | `phase4-ping-matrix-admin.png` |
+| Creative (192.168.56.40) | Admin (192.168.56.8) | ✅ 4/4 | `phase4-ping-matrix-creative.png` |
+| Creative (192.168.56.40) | Production (192.168.56.70) | ✅ 4/4 | `phase4-ping-matrix-creative.png` |
+| Production (192.168.56.70) | Admin (192.168.56.8) | ✅ 4/4 | `phase4-ping-matrix-prod.png` |
+| Production (192.168.56.70) | Creative (192.168.56.40) | ✅ 4/4 | `phase4-ping-matrix-prod.png` |
+
+**Note on Voice and Wireless VLAN ping behaviour:** IP phones in Packet Tracer do not respond to ICMP from PCs (expected — they are not general-purpose hosts), and the `AccessPoint-PT-N` model does not expose a routable management IP. Voice VLAN separation is instead proven at the configuration level (dedicated VLAN 40 on switch ports, dedicated DHCP pool) and via the config evidence in `phase3-voice-vlan-isolation-verified.png`.
+
+## Full department-to-department ping matrix
+
+All 6 pairs of department VLANs confirmed with live ICMP traffic. Every ping returned 4/4 replies with TTL=127, confirming traffic routed through the Core L3 switch.
+
+| Source | Target | Result | Evidence |
+|---|---|---|---|
+| Admin (192.168.56.8) | Creative (192.168.56.40) | ✅ 4/4 | `phase4-ping-matrix-admin.png` |
+| Admin (192.168.56.8) | Production (192.168.56.70) | ✅ 4/4 | `phase4-ping-matrix-admin.png` |
+| Creative (192.168.56.40) | Admin (192.168.56.8) | ✅ 4/4 | `phase4-ping-matrix-creative.png` |
+| Creative (192.168.56.40) | Production (192.168.56.70) | ✅ 4/4 | `phase4-ping-matrix-creative.png` |
+| Production (192.168.56.70) | Admin (192.168.56.8) | ✅ 4/4 | `phase4-ping-matrix-prod.png` |
+| Production (192.168.56.70) | Creative (192.168.56.40) | ✅ 4/4 | `phase4-ping-matrix-prod.png` |
+
+**Note on Voice and Wireless VLAN ping behaviour:** IP phones in Packet Tracer do not respond to ICMP from PCs (expected — they are not general-purpose hosts), and the `AccessPoint-PT-N` model does not expose a routable management IP. Voice VLAN separation is instead proven at the configuration level (dedicated VLAN 40 on switch ports, dedicated DHCP pool) and via the config evidence in `phase3-voice-vlan-isolation-verified.png`.
+
 ## Outstanding for full test coverage
 
-- Full department-to-department ping matrix (all 6 VLAN pairs, not just the 2 tested above)
-- Voice VLAN traffic isolation confirmed via live packet capture or simulation mode (currently confirmed only via VLAN assignment, not live traffic separation)
-- WPA2-Enterprise extension testing (if attempted)
+- Voice VLAN traffic isolation confirmed via Simulation mode packet capture (in progress)
+- WPA2-Enterprise extension testing (optional, not attempted)
