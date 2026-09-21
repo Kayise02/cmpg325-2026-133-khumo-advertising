@@ -12,9 +12,6 @@ hostname SW-Admin
 !
 !
 !
-!
-!
-!
 spanning-tree mode pvst
 spanning-tree extend system-id
 !
@@ -103,7 +100,3 @@ line vty 5 15
 !
 !
 end
-
-
-SW-Admin#
-SW-Admin#

@@ -12,37 +12,12 @@ hostname EdgeR2
 !
 !
 !
-!
-!
-!
-!
-!
 ip cef
 no ipv6 cef
 !
-!
-!
-!
-license udi pid CISCO1941/K9 sn FTX1524F67P-
-!
-!
-!
-!
-!
-!
-!
-!
-!
-!
-!
-!
+license udi pid CISCO1941/K9 sn FTX1524F67P
 !
 spanning-tree mode pvst
-!
-!
-!
-!
-!
 !
 interface GigabitEthernet0/0
  description LAN-to-CoreSW
@@ -61,14 +36,10 @@ interface Vlan1
  shutdown
 !
 ip classless
-ip route 0.0.0.0 0.0.0.0 203.0.113.6 
-ip route 192.168.56.0 255.255.255.0 172.16.0.5 
+ip route 0.0.0.0 0.0.0.0 203.0.113.6
+ip route 192.168.56.0 255.255.255.0 172.16.0.5
 !
 ip flow-export version 9
-!
-!
-!
-!
 !
 !
 !
@@ -82,4 +53,3 @@ line vty 0 4
 !
 !
 end
-

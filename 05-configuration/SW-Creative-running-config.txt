@@ -12,9 +12,6 @@ hostname SW-Creative
 !
 !
 !
-!
-!
-!
 spanning-tree mode pvst
 spanning-tree extend system-id
 !

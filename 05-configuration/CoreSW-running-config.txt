@@ -42,127 +42,67 @@ ip dhcp pool WIRELESS
  dns-server 8.8.8.8
 !
 !
+!
+no ip cef
 ip routing
 !
-!
-!
-!
-!
-!
-!
-!
-!
-!
-!
-!
-!
-!
+no ipv6 cef
 !
 spanning-tree mode pvst
 !
-!
-!
-!
-!
-!
-interface FastEthernet0/1
+interface GigabitEthernet1/0/1
  no switchport
  ip address 172.16.0.1 255.255.255.252
  duplex auto
  speed auto
 !
-interface FastEthernet0/2
+interface GigabitEthernet1/0/2
  switchport trunk native vlan 99
  switchport trunk allowed vlan 10,20,30,40,50,99
- switchport trunk encapsulation dot1q
  switchport mode trunk
 !
-interface FastEthernet0/3
+interface GigabitEthernet1/0/3
  switchport trunk native vlan 99
  switchport trunk allowed vlan 10,20,30,40,50,99
- switchport trunk encapsulation dot1q
  switchport mode trunk
 !
-interface FastEthernet0/4
+interface GigabitEthernet1/0/4
  switchport trunk native vlan 99
  switchport trunk allowed vlan 10,20,30,40,50,99
- switchport trunk encapsulation dot1q
  switchport mode trunk
 !
-interface FastEthernet0/5
-!
-interface FastEthernet0/6
-!
-interface FastEthernet0/7
-!
-interface FastEthernet0/8
-!
-interface FastEthernet0/9
-!
-interface FastEthernet0/10
-!
-interface FastEthernet0/11
-!
-interface FastEthernet0/12
-!
-interface FastEthernet0/13
-!
-interface FastEthernet0/14
-!
-interface FastEthernet0/15
-!
-interface FastEthernet0/16
-!
-interface FastEthernet0/17
-!
-interface FastEthernet0/18
-!
-interface FastEthernet0/19
-!
-interface FastEthernet0/20
-!
-interface FastEthernet0/21
-!
-interface FastEthernet0/22
-!
-interface FastEthernet0/23
-!
-interface FastEthernet0/24
-!
-interface GigabitEthernet0/1
+interface GigabitEthernet1/0/5
  no switchport
  ip address 172.16.0.5 255.255.255.252
  duplex auto
  speed auto
-!
-interface GigabitEthernet0/2
 !
 interface Vlan1
  no ip address
  shutdown
 !
 interface Vlan10
- mac-address 0001.6444.a101
+ mac-address 00d0.bce7.3c01
  ip address 192.168.56.1 255.255.255.224
 !
 interface Vlan20
- mac-address 0001.6444.a102
+ mac-address 00d0.bce7.3c02
  ip address 192.168.56.33 255.255.255.224
 !
 interface Vlan30
- mac-address 0001.6444.a103
+ mac-address 00d0.bce7.3c03
  ip address 192.168.56.65 255.255.255.224
 !
 interface Vlan40
- mac-address 0001.6444.a104
+ mac-address 00d0.bce7.3c04
  ip address 192.168.56.97 255.255.255.224
 !
 interface Vlan50
- mac-address 0001.6444.a105
+ mac-address 00d0.bce7.3c05
  ip address 192.168.56.129 255.255.255.224
 !
 interface Vlan99
- mac-address 0001.6444.a106
+ mac-address 00d0.bce7.3c06
  ip address 192.168.56.161 255.255.255.224
 !
 ip classless
@@ -171,13 +111,6 @@ ip route 0.0.0.0 0.0.0.0 172.16.0.6 100
 !
 ip flow-export version 9
 !
-!
-!
-!
-!
-!
-!
-!
 line con 0
 !
 line aux 0
@@ -185,8 +118,4 @@ line aux 0
 line vty 0 4
  login
 !
-!
-!
-!
 end
-
