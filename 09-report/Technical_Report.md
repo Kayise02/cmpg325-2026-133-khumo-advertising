@@ -68,7 +68,7 @@ The network follows a three-tier collapsed-core design:
 - **Access layer:** three 2960 switches, one per department.
 - **Wireless:** AP-Creative connected to SW-Creative on VLAN 50.
 
-![Physical topology](06-testing/phase1-full-topology-cables-green.png)
+![Physical topology](../06-testing/phase1-full-topology-cables-green.png)
 
 *Figure 1: Physical topology*
 
@@ -87,7 +87,7 @@ The network follows a three-tier collapsed-core design:
 | 50 | Wireless | 192.168.56.128/27 | 192.168.56.129 | Wireless clients |
 | 99 | Native-Mgmt | 192.168.56.160/27 | 192.168.56.161 | Device management |
 
-![Logical topology](06-testing/phase3-logical-topology-view.png)
+![Logical topology](../06-testing/phase3-logical-topology-view.png)
 
 *Figure 2: Logical topology*
 
@@ -133,7 +133,7 @@ The network follows a three-tier collapsed-core design:
 - Passphrase: documented in `05-configuration/AP-Creative-wireless.txt`
 - Channel: 6 (2.4 GHz), wired uplink into SW-Creative on VLAN 50.
 
-![AP-Creative wireless security settings](06-testing/wpa2-psk-ap-config.png)
+![AP-Creative wireless security settings](../06-testing/wpa2-psk-ap-config.png)
 
 *Figure 3: AP-Creative wireless security settings*
 
@@ -166,11 +166,11 @@ Evidence is stored in `06-testing/`, organised by phase.
 | 7 | CR15 failover | Shut CoreSW link to EdgeR1, ping ISP2 | Failover to EdgeR2 | Gateway switched to 172.16.0.6, ping succeeded | Pass |
 | 8 | Trunk verification | `show interfaces trunk` | Correct VLANs per trunk | Confirmed | Pass |
 
-![Inter-VLAN routing verified](06-testing/phase4-intervlan-routing-verified.png)
+![Inter-VLAN routing verified](../06-testing/phase4-intervlan-routing-verified.png)
 
 *Figure 4: Inter-VLAN routing verified with live traffic*
 
-![WPA2-PSK client connected](06-testing/phase5-wpa2-psk-client-connected.png)
+![WPA2-PSK client connected](../06-testing/phase5-wpa2-psk-client-connected.png)
 
 *Figure 5: Wireless client associated with Khumo-Creative and holding a VLAN 50 address*
 
@@ -191,11 +191,11 @@ The administrative distance difference (10 vs 100) means the backup route is onl
 
 **Verification:** Shutting CoreSW's link to EdgeR1 caused the routing table to immediately install the backup route. `show ip route` confirmed the gateway of last resort changed from `172.16.0.2` to `172.16.0.6`. A ping from a PC to ISP2 succeeded with 0% packet loss, proving end-to-end failover. Restoring the primary link returned the routing table to the primary path automatically.
 
-![CR15 failover route table](06-testing/phase4-cr15-failover-test-SUCCESS.png)
+![CR15 failover route table](../06-testing/phase4-cr15-failover-test-SUCCESS.png)
 
 *Figure 6: Routing table after primary link failure — gateway now 172.16.0.6*
 
-![CR15 failover live traffic](06-testing/phase4-cr15-failover-success.png)
+![CR15 failover live traffic](../06-testing/phase4-cr15-failover-success.png)
 
 *Figure 7: Ping to backup ISP succeeding after failover*
 
