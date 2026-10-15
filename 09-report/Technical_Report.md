@@ -4,7 +4,7 @@
 
 **Module:** CMPG325-2026-133
 **Student:** Nyeleti Shivuri
-**Student Number:**42718910
+**Student Number:** 42718910
 **Submission Date:** 16 October 2026
 **Milestone:** 3 — Final Submission
 
@@ -34,16 +34,16 @@ This report covers:
 
 ## 3. Requirements Summary
 
-| Ref  | Requirement                    | How It Is Met                                         |
-| ---- | ------------------------------ | ----------------------------------------------------- |
-| CR1  | Departmental separation        | VLANs 10, 20, 30 per department                       |
-| CR2  | Inter-department communication | CoreSW SVIs with `ip routing` enabled                 |
-| CR3  | Centralised IP management      | DHCP pools on CoreSW per VLAN                         |
-| CR4  | Voice services                 | VLAN 40, voice VLAN on access ports, DHCP option 150  |
-| CR5  | Wireless access                | AP-Creative on VLAN 50, WPA2-PSK                      |
-| CR6  | Native VLAN hygiene            | Native VLAN 99 on all trunks, not VLAN 1              |
-| CR7  | Management VLAN                | VLAN 99 for switch and router management              |
-| CR15 | ISP resilience                 | Dual edge routers, floating static route failover     |
+| Ref | Requirement | How It Is Met |
+|---|---|---|
+| CR1 | Departmental separation | VLANs 10, 20, 30 per department |
+| CR2 | Inter-department communication | CoreSW SVIs with `ip routing` enabled |
+| CR3 | Centralised IP management | DHCP pools on CoreSW per VLAN |
+| CR4 | Voice services | VLAN 40, voice VLAN on access ports, DHCP option 150 |
+| CR5 | Wireless access | AP-Creative on VLAN 50, WPA2-PSK |
+| CR6 | Native VLAN hygiene | Native VLAN 99 on all trunks, not VLAN 1 |
+| CR7 | Management VLAN | VLAN 99 for switch and router management |
+| CR15 | ISP resilience | Dual edge routers, floating static route failover |
 
 ---
 
@@ -66,7 +66,11 @@ The network follows a three-tier collapsed-core design:
 - **Edge layer:** two 1941 routers, each connected to a separate ISP device.
 - **Core layer:** one 3560 multilayer switch performing inter-VLAN routing.
 - **Access layer:** three 2960 switches, one per department.
-- **Wireless:** AP-Creative trunked into SW-Creative on VLAN 50.
+- **Wireless:** AP-Creative connected to SW-Creative on VLAN 50.
+
+![Physical topology](06-testing/phase1-full-topology-cables-green.png)
+
+*Figure 1: Physical topology*
 
 ---
 
@@ -74,23 +78,27 @@ The network follows a three-tier collapsed-core design:
 
 ### 5.1 VLAN and Addressing Plan
 
-| VLAN | Name            | Subnet            | Gateway        | Purpose                 |
-| ---- | --------------- | ----------------- | -------------- | ----------------------- |
-| 10   | Admin-Data      | 192.168.56.0/27   | 192.168.56.1   | Admin workstations      |
-| 20   | Creative-Data   | 192.168.56.32/27  | 192.168.56.33  | Creative workstations   |
-| 30   | Production-Data | 192.168.56.64/27  | 192.168.56.65  | Production workstations |
-| 40   | Voice-VoIP      | 192.168.56.96/27  | 192.168.56.97  | IP phones               |
-| 50   | Wireless        | 192.168.56.128/27 | 192.168.56.129 | Wireless clients        |
-| 99   | Native-Mgmt     | 192.168.56.160/27 | 192.168.56.161 | Device management       |
+| VLAN | Name | Subnet | Gateway | Purpose |
+|---|---|---|---|---|
+| 10 | Admin-Data | 192.168.56.0/27 | 192.168.56.1 | Admin workstations |
+| 20 | Creative-Data | 192.168.56.32/27 | 192.168.56.33 | Creative workstations |
+| 30 | Production-Data | 192.168.56.64/27 | 192.168.56.65 | Production workstations |
+| 40 | Voice-VoIP | 192.168.56.96/27 | 192.168.56.97 | IP phones |
+| 50 | Wireless | 192.168.56.128/27 | 192.168.56.129 | Wireless clients |
+| 99 | Native-Mgmt | 192.168.56.160/27 | 192.168.56.161 | Device management |
+
+![Logical topology](06-testing/phase3-logical-topology-view.png)
+
+*Figure 2: Logical topology*
 
 ### 5.2 Point-to-Point Links
 
-| Link             | Subnet         | CoreSW     | Router           |
-| ---------------- | -------------- | ---------- | ---------------- |
-| CoreSW to EdgeR1 | 172.16.0.0/30  | 172.16.0.1 | 172.16.0.2       |
-| CoreSW to EdgeR2 | 172.16.0.4/30  | 172.16.0.5 | 172.16.0.6       |
-| EdgeR1 to ISP1   | 203.0.113.0/30 | —          | 203.0.113.1 / .2 |
-| EdgeR2 to ISP2   | 203.0.113.4/30 | —          | 203.0.113.5 / .6 |
+| Link | Subnet | CoreSW | Router |
+|---|---|---|---|
+| CoreSW to EdgeR1 | 172.16.0.0/30 | 172.16.0.1 | 172.16.0.2 |
+| CoreSW to EdgeR2 | 172.16.0.4/30 | 172.16.0.5 | 172.16.0.6 |
+| EdgeR1 to ISP1 | 203.0.113.0/30 | — | 203.0.113.1 / .2 |
+| EdgeR2 to ISP2 | 203.0.113.4/30 | — | 203.0.113.5 / .6 |
 
 ---
 
@@ -101,7 +109,7 @@ The network follows a three-tier collapsed-core design:
 - `ip routing` enabled for SVI-based inter-VLAN routing.
 - Six SVIs configured, one per VLAN.
 - Trunks to all three access switches with native VLAN 99.
-- Two routed uplinks (Gig0/1, Gig0/2) to EdgeR1 and EdgeR2.
+- Two routed uplinks to EdgeR1 and EdgeR2.
 - Five DHCP pools (Admin, Creative, Production, Voice, Wireless).
 - Primary default route via EdgeR1 (AD 10) and floating static via EdgeR2 (AD 100).
 
@@ -109,8 +117,8 @@ The network follows a three-tier collapsed-core design:
 
 - Single trunk uplink to CoreSW per switch, native VLAN 99.
 - Access ports assigned to their department VLAN.
-- SW-Admin: voice VLAN 40 on all access ports for IP phones.
-- SW-Creative: Fa0/11 reserved as access port for AP-Creative on VLAN 50.
+- SW-Admin: voice VLAN 40 on phone-facing access ports.
+- SW-Creative: one access port reserved for AP-Creative on VLAN 50.
 
 ### 6.3 Edge Routers
 
@@ -122,37 +130,51 @@ The network follows a three-tier collapsed-core design:
 
 - SSID: `Khumo-Creative`
 - Authentication: WPA2-PSK
-- Passphrase: [documented in `05-configuration/AP-Creative-wireless.txt`]
-- Channel: 6 (2.4 GHz), wired uplink into SW-Creative Fa0/11 (VLAN 50).
+- Passphrase: documented in `05-configuration/AP-Creative-wireless.txt`
+- Channel: 6 (2.4 GHz), wired uplink into SW-Creative on VLAN 50.
+
+![AP-Creative wireless security settings](06-testing/wpa2-psk-ap-config.png)
+
+*Figure 3: AP-Creative wireless security settings*
 
 ### 6.5 Security Hardening
 
 - `enable secret`, console, and VTY passwords on all six network devices.
 - `banner motd` on all devices.
-- Port security on all 12 end-device-facing access ports (max 1 MAC, sticky, restrict).
+- Port security trialled during the build but not part of the submitted `.pkt`. Documented as a limitation in Section 12.
 
 ---
 
 ## 7. Testing Methodology
 
-Testing followed the checklist defined in Milestone 2. Each test was performed live in Packet Tracer, with screenshots captured as evidence. Tests were designed to verify each CR requirement, not just basic reachability.
+Testing followed the checklist defined in Milestone 2. Each test was performed live in Packet Tracer in realtime mode, with screenshots captured as evidence. Tests were designed to verify each CR requirement, not just basic reachability.
 
-Evidence is stored in `06-testing/`, organised by test.
+Evidence is stored in `06-testing/`, organised by phase.
 
 ---
 
 ## 8. Test Results
 
-| # | Test                    | Method                         | Expected                 | Actual                                         | Status |
-| - | ----------------------- | ------------------------------ | ------------------------ | ---------------------------------------------- | ------ |
-| 1 | VLAN connectivity       | Ping Admin PC to Creative PC   | Success                  | Success                                        | Pass   |
-| 2 | DHCP assignment         | `ipconfig` on each PC          | Correct subnet           | Correct subnet                                 | Pass   |
-| 3 | Inter-VLAN routing      | `show ip route` on CoreSW      | All 6 VLANs + defaults   | All present                                    | Pass   |
-| 4 | Voice VLAN isolation    | `show vlan brief` on SW-Admin  | VLAN 40 phone ports only | Confirmed                                      | Pass   |
-| 5 | Wireless authentication | Connect PC to `Khumo-Creative` | WPA2-PSK required        | Correct key required, wrong key rejected       | Pass   |
-| 6 | Wireless DHCP           | `ipconfig` on wireless client  | 192.168.56.129–158       | Correct range                                  | Pass   |
-| 7 | CR15 failover           | Shut CoreSW Fa0/1, ping ISP2   | Failover to EdgeR2       | Gateway switched to 172.16.0.6, ping succeeded | Pass   |
-| 8 | Trunk verification      | `show interfaces trunk`        | Correct VLANs per trunk  | Confirmed                                      | Pass   |
+| # | Test | Method | Expected | Actual | Status |
+|---|---|---|---|---|---|
+| 1 | VLAN connectivity | Ping Admin PC to Creative PC | Success | Success | Pass |
+| 2 | DHCP assignment | `ipconfig` on each PC | Correct subnet | Correct subnet | Pass |
+| 3 | Inter-VLAN routing | `show ip route` on CoreSW | All 6 VLANs + defaults | All present | Pass |
+| 4 | Voice VLAN isolation | `show vlan brief` on SW-Admin | VLAN 40 phone ports only | Confirmed | Pass |
+| 5 | Wireless authentication | Connect PC to `Khumo-Creative` | WPA2-PSK required | Correct key required, wrong key rejected | Pass |
+| 6 | Wireless DHCP | `ipconfig` on wireless client | 192.168.56.129–158 | Correct range | Pass |
+| 7 | CR15 failover | Shut CoreSW link to EdgeR1, ping ISP2 | Failover to EdgeR2 | Gateway switched to 172.16.0.6, ping succeeded | Pass |
+| 8 | Trunk verification | `show interfaces trunk` | Correct VLANs per trunk | Confirmed | Pass |
+
+![Inter-VLAN routing verified](06-testing/phase4-intervlan-routing-verified.png)
+
+*Figure 4: Inter-VLAN routing verified with live traffic*
+
+![WPA2-PSK client connected](06-testing/phase5-wpa2-psk-client-connected.png)
+
+*Figure 5: Wireless client associated with Khumo-Creative and holding a VLAN 50 address*
+
+**Note on TTL:** TTL 127 confirms the packet passed through exactly one router hop (CoreSW), which validates that inter-VLAN routing is happening at the SVI and not being bridged at Layer 2.
 
 ---
 
@@ -165,9 +187,17 @@ Evidence is stored in `06-testing/`, organised by test.
 - Primary: `ip route 0.0.0.0 0.0.0.0 172.16.0.2 10` (via EdgeR1)
 - Backup: `ip route 0.0.0.0 0.0.0.0 172.16.0.6 100` (via EdgeR2)
 
-The administrative distance difference (10 vs 100) means the backup route is only installed when the primary path is unreachable.
+The administrative distance difference (10 vs 100) means the backup route is only installed when the primary path is unreachable. This is a floating static route.
 
-**Verification:** Shutting CoreSW's link to EdgeR1 caused the routing table to immediately install the backup route. `show ip route` confirmed the gateway of last resort changed from `172.16.0.2` to `172.16.0.6`. A ping from a PC to ISP2 succeeded with 0% packet loss, proving end-to-end failover.
+**Verification:** Shutting CoreSW's link to EdgeR1 caused the routing table to immediately install the backup route. `show ip route` confirmed the gateway of last resort changed from `172.16.0.2` to `172.16.0.6`. A ping from a PC to ISP2 succeeded with 0% packet loss, proving end-to-end failover. Restoring the primary link returned the routing table to the primary path automatically.
+
+![CR15 failover route table](06-testing/phase4-cr15-failover-test-SUCCESS.png)
+
+*Figure 6: Routing table after primary link failure — gateway now 172.16.0.6*
+
+![CR15 failover live traffic](06-testing/phase4-cr15-failover-success.png)
+
+*Figure 7: Ping to backup ISP succeeding after failover*
 
 **Known limitation:** The 3560's IOS image (`12.2(37)SE1`) does not support IP SLA object tracking, so upstream failures beyond the next hop (for example, ISP1 going down while EdgeR1 itself stays up) cannot be detected by this design in the simulated environment. Failover was verified for link and router failure, which is the most common real-world failure mode for CR15. See Issue 6 in the troubleshooting log.
 
@@ -175,7 +205,7 @@ The administrative distance difference (10 vs 100) means the backup route is onl
 
 ## 10. Troubleshooting Summary
 
-Nine issues were encountered and resolved during the build. Full details are in `07-troubleshooting/Troubleshooting_Log.md`. These included native VLAN mismatches, encapsulation requirements on the 3560, PoE limitations on the 2960, port assignment mistakes, CR15 failover behaviour, asymmetric routing, DHCP client defaults, and a transient DHCP conflict on a voice client.
+Nine issues were encountered and resolved during the build. Full details are in `07-troubleshooting/troubleshooting-log.md`. These included native VLAN mismatches, encapsulation requirements on the 3560, PoE limitations on the 2960, port assignment mistakes, CR15 failover behaviour, asymmetric routing, DHCP client defaults, and a transient DHCP conflict on a voice client.
 
 Documenting these issues, rather than hiding them, demonstrates a genuine troubleshooting process and reinforces the value of verifying before configuring.
 
@@ -200,12 +230,29 @@ Documenting these issues, rather than hiding them, demonstrates a genuine troubl
 - Add 802.1X authentication for wired ports.
 - Replace PSK with WPA2-Enterprise (802.1X + RADIUS) for wireless.
 - Introduce network monitoring (SNMP, syslog) and centralised logging.
+- Apply port security on all end-device-facing access ports (trialled but not included in the submitted file).
 
 ---
 
 ## 13. Conclusion
 
 The network meets all specified requirements. VLAN segmentation, inter-VLAN routing, DHCP, voice and wireless services, and CR15 resilience were all implemented and verified. The design is documented, reproducible, and defensible, with known limitations clearly identified. All evidence, configuration, and test results are included in this portfolio.
+
+---
+
+## How to Open the Project
+
+1. Install Cisco Packet Tracer 8.x.
+2. Open `04-packet-tracer/Khumo_Network.pkt`.
+3. Wait 60 seconds for spanning-tree convergence and DHCP leases.
+4. All PCs will receive addresses automatically.
+5. Follow `06-testing/testing-summary.md` to reproduce the test results.
+
+---
+
+## Video Demonstration
+
+[Watch the demonstration](https://your-video-link-here)
 
 ---
 
@@ -223,8 +270,6 @@ North-West University (2026) *Milestone 2 Project Guide*. Mahikeng: North-West U
 
 North-West University (2026) *Reflections*. Mahikeng: North-West University.
 
----
-
 ### 14.2 Technical Documentation and Cisco Resources
 
 Cisco Systems (2009) *Catalyst 3750-X and Catalyst 3560-X Switch Software Configuration Guide, Cisco IOS Release 15.0(2)EZ*. Available at: https://ciscolivewem.cisco.com/c/en/us/td/docs/switches/lan/catalyst3750x_3560x/software/release/15-0_2_ez/configuration/guide/3750x_cg/swipsla.html (Accessed: 22 September 2026).
@@ -233,30 +278,29 @@ Cisco Systems (2012) '3750 vs. 3560?', *Cisco Learning Network*, 17 July. Availa
 
 Cisco Systems (2026) 'IP SLA problem', *Cisco Learning Network*. Available at: https://learningnetwork.cisco.com/s/question/0D53i00000KstsMCAR/ip-sla-problem (Accessed: 22 September 2026).
 
----
-
 ### 14.3 Walkthroughs and Lab References Used During the Build
 
 Dorsey, T. (2026) *Day-24-Floating-Static-Routes-and-Failover-Testing*, GitHub repository. Available at: https://github.com/TushanDorsey/Network-Engineering-Labs-CCNA-2026/blob/main/Labs/Day-24-Floating-Static-Routes-and-Failover-Testing.md (Accessed: 21 September 2026).
 
 Farr1swheell (2026) *Lab 3-3 DHCP in Packet Tracer*, GitHub wiki. Available at: https://github.com/Farr1swheell/CyberSecurity_Repository/wiki/Lab-3%E2%80%903-DHCP-in-Packet-Tracer (Accessed: 17 September 2026).
 
-Hossam, M. (2025) *Inter-VLAN Routing with Multilayer Switch*, GitHub repository. Available at: https://github.com/Manar-Hossam/Inter-VLAN-Routing-with-Multilayer-Switch (Accessed: 18  September 2026).
+Hossam, M. (2025) *Inter-VLAN Routing with Multilayer Switch*, GitHub repository. Available at: https://github.com/Manar-Hossam/Inter-VLAN-Routing-with-Multilayer-Switch (Accessed: 18 September 2026).
 
 Prasun-cyber (2025) *WiFi, WLAN, and WLC Configuration (Cisco Packet Tracer)*, GitHub repository. Available at: https://github.com/Prasun-cyber/WiFi__WLAN__-WLC_Configuration (Accessed: 18 September 2026).
 
-Reksaev (2026) *SMB Network Lab (Cisco Packet Tracer) — HSRP + EIGRP + DHCP Relay + ACL*, GitHub repository. Available at: https://github.com/reksaev/smb-network-lab-hsrp-eigrp-acl (Accessed: 20  September 2026).
+Reksaev (2026) *SMB Network Lab (Cisco Packet Tracer) — HSRP + EIGRP + DHCP Relay + ACL*, GitHub repository. Available at: https://github.com/reksaev/smb-network-lab-hsrp-eigrp-acl (Accessed: 20 September 2026).
 
 Ro-drick (2024) *Floating Static Routes Configuration*, GitHub repository. Available at: https://github.com/ro-drick/Floating-Static-Routes-Configuration (Accessed: 20 September 2026).
 
+---
 
 ## Appendix A — File Map
 
-| Path                                 | Contents                                |
-| ------------------------------------ | --------------------------------------- |
-| `04-packet-tracer/Khumo_Network.pkt` | Final Packet Tracer project             |
-| `05-configuration/`                  | Running-config exports per device       |
-| `06-testing/`                        | Testing screenshots and notes           |
-| `07-troubleshooting/`                | Troubleshooting log (9 issues)          |
-| `08-reflections/`                    | Personal reflections on the build process |
-| `09-report/Technical_Report.md`      | This report                             |
+| Path | Contents |
+|---|---|
+| `04-packet-tracer/Khumo_Network.pkt` | Final Packet Tracer project |
+| `05-configuration/` | Running-config exports per device |
+| `06-testing/` | Testing screenshots and notes |
+| `07-troubleshooting/` | Troubleshooting log (9 issues) |
+| `08-reflection/` | Personal reflections on the build process |
+| `09-report/Technical_Report.md` | This report |
