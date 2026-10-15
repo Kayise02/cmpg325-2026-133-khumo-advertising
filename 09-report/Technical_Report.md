@@ -68,7 +68,7 @@ The network follows a three-tier collapsed-core design:
 - **Access layer:** three 2960 switches, one per department.
 - **Wireless:** AP-Creative connected to SW-Creative on VLAN 50.
 
-![Physical topology](../06-testing/phase1-full-topology-cables-green.png)
+![Physical topology](../02-topology/physical-topology.png)
 
 *Figure 1: Physical topology*
 
@@ -87,7 +87,7 @@ The network follows a three-tier collapsed-core design:
 | 50 | Wireless | 192.168.56.128/27 | 192.168.56.129 | Wireless clients |
 | 99 | Native-Mgmt | 192.168.56.160/27 | 192.168.56.161 | Device management |
 
-![Logical topology](../06-testing/phase3-logical-topology-view.png)
+![Logical topology](../02-topology/logical-topology.png)
 
 *Figure 2: Logical topology*
 
@@ -113,12 +113,32 @@ The network follows a three-tier collapsed-core design:
 - Five DHCP pools (Admin, Creative, Production, Voice, Wireless).
 - Primary default route via EdgeR1 (AD 10) and floating static via EdgeR2 (AD 100).
 
+![CoreSW VLAN and SVI configuration](../06-testing/phase2-vlans-svis-trunking.png)
+
+*Figure 3: CoreSW VLAN, SVI, and trunk configuration*
+
+![CoreSW DHCP pools](../06-testing/phase2-dhcp-pools.png)
+
+*Figure 4: DHCP pools on CoreSW*
+
 ### 6.2 Access Switches
 
 - Single trunk uplink to CoreSW per switch, native VLAN 99.
 - Access ports assigned to their department VLAN.
 - SW-Admin: voice VLAN 40 on phone-facing access ports.
 - SW-Creative: one access port reserved for AP-Creative on VLAN 50.
+
+![SW-Admin configuration](../06-testing/phase3-sw-admin-config.png)
+
+*Figure 5: SW-Admin configuration*
+
+![SW-Creative configuration](../06-testing/phase3-sw-creative-config.png)
+
+*Figure 6: SW-Creative configuration*
+
+![SW-Prod configuration](../06-testing/phase3-sw-prod-config.png)
+
+*Figure 7: SW-Prod configuration*
 
 ### 6.3 Edge Routers
 
@@ -135,7 +155,7 @@ The network follows a three-tier collapsed-core design:
 
 ![AP-Creative wireless security settings](../06-testing/wpa2-psk-ap-config.png)
 
-*Figure 3: AP-Creative wireless security settings*
+*Figure 8: AP-Creative wireless security settings*
 
 ### 6.5 Security Hardening
 
@@ -166,13 +186,29 @@ Evidence is stored in `06-testing/`, organised by phase.
 | 7 | CR15 failover | Shut CoreSW link to EdgeR1, ping ISP2 | Failover to EdgeR2 | Gateway switched to 172.16.0.6, ping succeeded | Pass |
 | 8 | Trunk verification | `show interfaces trunk` | Correct VLANs per trunk | Confirmed | Pass |
 
+![DHCP addressing on Admin PC](../06-testing/phase3-pc-admin-ipconfig.png)
+
+*Figure 9: DHCP addressing on Admin PC*
+
+![DHCP addressing on Creative PC](../06-testing/phase3-pc-creative-ipconfig.png)
+
+*Figure 10: DHCP addressing on Creative PC*
+
+![DHCP addressing on Production PC](../06-testing/phase3-pc-prod-ipconfig.png)
+
+*Figure 11: DHCP addressing on Production PC*
+
 ![Inter-VLAN routing verified](../06-testing/phase4-intervlan-routing-verified.png)
 
-*Figure 4: Inter-VLAN routing verified with live traffic*
+*Figure 12: Inter-VLAN routing verified with live traffic*
 
-![WPA2-PSK client connected](../06-testing/phase5-wpa2-psk-client-connected.png)
+![Voice VLAN isolation verified](../06-testing/phase3-voice-vlan-isolation-verified.png)
 
-*Figure 5: Wireless client associated with Khumo-Creative and holding a VLAN 50 address*
+*Figure 13: Voice VLAN isolation verified*
+
+![All three IP phones with DHCP leases](../06-testing/phase3-all-three-phones-dhcp-confirmed.png)
+
+*Figure 14: All three IP phones with DHCP leases*
 
 **Note on TTL:** TTL 127 confirms the packet passed through exactly one router hop (CoreSW), which validates that inter-VLAN routing is happening at the SVI and not being bridged at Layer 2.
 
@@ -193,17 +229,38 @@ The administrative distance difference (10 vs 100) means the backup route is onl
 
 ![CR15 failover route table](../06-testing/phase4-cr15-failover-test-SUCCESS.png)
 
-*Figure 6: Routing table after primary link failure — gateway now 172.16.0.6*
+*Figure 15: Routing table after primary link failure — gateway now 172.16.0.6*
 
 ![CR15 failover live traffic](../06-testing/phase4-cr15-failover-success.png)
 
-*Figure 7: Ping to backup ISP succeeding after failover*
+*Figure 16: Ping to backup ISP succeeding after failover*
+
+![CR15 primary path restored](../06-testing/phase4-cr15-primary-restored.png)
+
+*Figure 17: Primary path restored after bringing the link back up*
 
 **Known limitation:** The 3560's IOS image (`12.2(37)SE1`) does not support IP SLA object tracking, so upstream failures beyond the next hop (for example, ISP1 going down while EdgeR1 itself stays up) cannot be detected by this design in the simulated environment. Failover was verified for link and router failure, which is the most common real-world failure mode for CR15. See Issue 6 in the troubleshooting log.
 
 ---
 
-## 10. Troubleshooting Summary
+## 10. Wireless Security — WPA2-PSK
+
+![WPA2-PSK client connected](../06-testing/phase5-wpa2-psk-client-connected.png)
+
+*Figure 18: Wireless client associated with Khumo-Creative and holding a VLAN 50 address*
+
+![WPA2-PSK wrong passphrase rejected](../06-testing/phase5-wpa2-psk-wrong-password-rejected.png)
+
+*Figure 19: Wrong passphrase rejected — no association with access point*
+
+The wireless access point uses WPA2-PSK with AES encryption. Two verifications were made:
+
+1. **Acceptance:** A client associated with the correct passphrase and received a DHCP address (192.168.56.134) in the VLAN 50 range.
+2. **Rejection:** Changing the passphrase to a wrong value caused the client to lose association, proving the key is enforced.
+
+---
+
+## 11. Troubleshooting Summary
 
 Nine issues were encountered and resolved during the build. Full details are in `07-troubleshooting/troubleshooting-log.md`. These included native VLAN mismatches, encapsulation requirements on the 3560, PoE limitations on the 2960, port assignment mistakes, CR15 failover behaviour, asymmetric routing, DHCP client defaults, and a transient DHCP conflict on a voice client.
 
@@ -211,7 +268,7 @@ Documenting these issues, rather than hiding them, demonstrates a genuine troubl
 
 ---
 
-## 11. Design Decisions and Justifications
+## 12. Design Decisions and Justifications
 
 - **Collapsed core with 3560:** Balances cost and function, provides inter-VLAN routing without a dedicated router.
 - **/27 subnets:** Provides 30 usable hosts per VLAN, sufficient for the projected departmental sizes and leaves room for growth.
@@ -222,7 +279,7 @@ Documenting these issues, rather than hiding them, demonstrates a genuine troubl
 
 ---
 
-## 12. Recommendations for Future Work
+## 13. Recommendations for Future Work
 
 - Upgrade to a router or IOS image that supports IP SLA for true upstream detection.
 - Add redundant links between CoreSW and access switches (EtherChannel + STP).
@@ -234,7 +291,7 @@ Documenting these issues, rather than hiding them, demonstrates a genuine troubl
 
 ---
 
-## 13. Conclusion
+## 14. Conclusion
 
 The network meets all specified requirements. VLAN segmentation, inter-VLAN routing, DHCP, voice and wireless services, and CR15 resilience were all implemented and verified. The design is documented, reproducible, and defensible, with known limitations clearly identified. All evidence, configuration, and test results are included in this portfolio.
 
@@ -256,9 +313,9 @@ The network meets all specified requirements. VLAN segmentation, inter-VLAN rout
 
 ---
 
-## 14. References
+## 15. References
 
-### 14.1 Academic and Course Materials
+### 15.1 Academic and Course Materials
 
 Cisco Networking Academy (2026) *Packet Tracer 8.x*. San Jose, CA: Cisco Systems.
 
@@ -270,7 +327,7 @@ North-West University (2026) *Milestone 2 Project Guide*. Mahikeng: North-West U
 
 North-West University (2026) *Reflections*. Mahikeng: North-West University.
 
-### 14.2 Technical Documentation and Cisco Resources
+### 15.2 Technical Documentation and Cisco Resources
 
 Cisco Systems (2009) *Catalyst 3750-X and Catalyst 3560-X Switch Software Configuration Guide, Cisco IOS Release 15.0(2)EZ*. Available at: https://ciscolivewem.cisco.com/c/en/us/td/docs/switches/lan/catalyst3750x_3560x/software/release/15-0_2_ez/configuration/guide/3750x_cg/swipsla.html (Accessed: 22 September 2026).
 
@@ -278,7 +335,7 @@ Cisco Systems (2012) '3750 vs. 3560?', *Cisco Learning Network*, 17 July. Availa
 
 Cisco Systems (2026) 'IP SLA problem', *Cisco Learning Network*. Available at: https://learningnetwork.cisco.com/s/question/0D53i00000KstsMCAR/ip-sla-problem (Accessed: 22 September 2026).
 
-### 14.3 Walkthroughs and Lab References Used During the Build
+### 15.3 Walkthroughs and Lab References Used During the Build
 
 Dorsey, T. (2026) *Day-24-Floating-Static-Routes-and-Failover-Testing*, GitHub repository. Available at: https://github.com/TushanDorsey/Network-Engineering-Labs-CCNA-2026/blob/main/Labs/Day-24-Floating-Static-Routes-and-Failover-Testing.md (Accessed: 21 September 2026).
 
@@ -298,6 +355,7 @@ Ro-drick (2024) *Floating Static Routes Configuration*, GitHub repository. Avail
 
 | Path | Contents |
 |---|---|
+| `02-topology/` | Physical and logical topology diagrams |
 | `04-packet-tracer/Khumo_Network.pkt` | Final Packet Tracer project |
 | `05-configuration/` | Running-config exports per device |
 | `06-testing/` | Testing screenshots and notes |
