@@ -120,7 +120,7 @@ The full requirements list and the engineering assumptions made where the brief 
 
 [Watch the demonstration](https://your-video-link-here)
 
-*Replace the placeholder link with your video URL before final submission.*
+
 
 ---
 
