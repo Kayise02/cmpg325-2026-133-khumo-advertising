@@ -117,8 +117,7 @@ The full requirements list and the engineering assumptions made where the brief 
 ---
 
 ## Video Demonstration
-
-[Watch the demonstration](https://your-video-link-here)
+https://efundi.nwu.ac.za/access/content/group-user/1b4c43e2-0741-423b-a0bf-eeb2446e3735/42718910/KHUMO_PRESENTATION_N_SHIVURI.mp4 
 
 
 
